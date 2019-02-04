@@ -1,0 +1,21 @@
+{
+  "name": "bamazon",
+  "version": "1.0.0",
+  "description": "bamazon homework",
+  "main": "bamazonCustomer.js",
+  "dependencies": {
+    "init": "^0.1.2",
+    "inquirer": "^6.2.2",
+    "mysql": "^2.16.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "node bamazonCustomer.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com-personal_user1:jmobley09/bamazon.git"
+  },
+  "author": "Joshua Mobley",
+  "license": "ISC"
+}
