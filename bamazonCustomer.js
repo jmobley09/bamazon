@@ -11,9 +11,22 @@ const connection = mysql.createConnection({
 });
 
 connection.connect(function (err) {
-    if (err) throw err;
-    runInterface();
+    showproducts();
 });
+
+function showproducts() {
+    const availProds = connection.query('SELECT * FROM `products`', function (err, results) {
+        const items = availProds._results[0];
+        
+        console.log('\n Available Items: \n');
+        for (let i = 0; i < items.length; i++) {
+            console.log(items[i].product_name + ': ' + items[i].price);
+        }
+        console.log('\n ------------- \n');
+        runInterface();
+    });
+}
+
 
 function runInterface() {
 
@@ -22,7 +35,7 @@ function runInterface() {
             {
                 name: "name",
                 type: "input",
-                message: "Which product would you like to buy? ",
+                message: "Which product would you like to buy? "
             },
             {
                 name: "amount",
@@ -38,13 +51,20 @@ function runInterface() {
         ])
         .then(function (answer) {
             const available = connection.query('SELECT * FROM `products` WHERE product_name = ?', [answer.name], function (err, results) {
-                if (err) throw err;
                 const stock = available._results[0][0].stock_quantity;
                 const itemID = available._results[0][0].item_id;
                 const updateAmount = stock - answer.amount;
+                const total = answer.amount * available._results[0][0].price;
+
+                if (stock == 'undefined') {
+                    console.log('Please select an item from the available list!');
+                    showproducts();
+                }
 
                 if (stock > answer.amount) {
                     connection.query('UPDATE `products` SET `stock_quantity` = ? WHERE `item_id` = ?', [updateAmount, itemID], function (err, results) {
+
+                        console.log('Transaction Total: ' + total);
                         console.log('New Quantity Available: ' + updateAmount);
                         connection.end();
                     });
@@ -56,12 +76,6 @@ function runInterface() {
 
                 }
             });
-
-
-            // if (isNaN(value) === false) {
-            //     return true;
-            // }
-            // return false;
         });
 }
 
